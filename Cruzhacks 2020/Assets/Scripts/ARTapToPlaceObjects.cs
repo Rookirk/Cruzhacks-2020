@@ -13,6 +13,7 @@ public class ARTapToPlaceObjects : MonoBehaviour
 	private ARSessionOrigin arOrigin;
 	private GameObject distanceIndicator;
 	private Text textDisplay;
+
 	private Pose placementPose;
 	private bool placementPoseIsValid = false;
 
@@ -51,7 +52,8 @@ public class ARTapToPlaceObjects : MonoBehaviour
     }
 
     private void UpdatePlacementPose(){
-    	var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
+    	var center = new Vector3(0.5f, 0.5f);
+    	var screenCenter = Camera.main.ViewportToScreenPoint(center);
     	var hits = new List<ARRaycastHit>();
     	var arOriginRaycast = arOrigin.GetComponent<ARRaycastManager>();
     	arOriginRaycast.Raycast(screenCenter, hits, TrackableType.Planes);
@@ -60,7 +62,7 @@ public class ARTapToPlaceObjects : MonoBehaviour
     	if(placementPoseIsValid){
     		placementPose = hits[0].pose;
 
-    		var cameraForward = Camera.current.transform.forward;
+    		var cameraForward = Camera.main.transform.forward;
     		var cameraBearing = new Vector3(cameraForward.x, 0, cameraForward.z).normalized;
     		placementPose.rotation = Quaternion.LookRotation(cameraBearing);
     	}
