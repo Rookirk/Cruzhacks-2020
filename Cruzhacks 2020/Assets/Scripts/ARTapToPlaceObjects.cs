@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
@@ -10,13 +11,20 @@ public class ARTapToPlaceObjects : MonoBehaviour
 	public GameObject placementIndicator;
 
 	private ARSessionOrigin arOrigin;
+	private GameObject distanceIndicator;
+	private Text textDisplay;
 	private Pose placementPose;
 	private bool placementPoseIsValid = false;
+
+	private Pose firstPosition;
+	private Pose secondPosition;
 
     // Start is called before the first frame update
     void Start()
     {
         arOrigin = FindObjectOfType<ARSessionOrigin>();
+        distanceIndicator = GameObject.Find("DistanceIndicator");
+        textDisplay = distanceIndicator.GetComponent<Text>();
     }
 
     // Update is called once per frame
@@ -32,6 +40,14 @@ public class ARTapToPlaceObjects : MonoBehaviour
 
     private void PlaceObject(){
     	Instantiate(objectToPlace, placementPose.position, placementPose.rotation);
+
+    	if(firstPosition == null){
+    		firstPosition = placementPose;
+    	}
+    	else{
+    		secondPosition = placementPose;
+    		textDisplay.text = Vector3.Distance(firstPosition.position, secondPosition.position).ToString();
+    	}
     }
 
     private void UpdatePlacementPose(){
